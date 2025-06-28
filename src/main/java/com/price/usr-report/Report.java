@@ -1,10 +1,6 @@
 package com.price.usrreport;
 
-/**
- * Hello world!
- *
- */
-public class report 
+public class Report 
 {
     public static void main( String[] args )
     {
