@@ -1,18 +1,19 @@
 package com.price.usrreport;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import java.util.HashSet;
+import java.util.Set;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
-
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class Report extends JavaPlugin implements Listener {
+    private final Set<String> onlinePlayers = new HashSet<>();
+
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
@@ -27,52 +28,18 @@ public class Report extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        int onlinePlayers = Bukkit.getOnlinePlayers().size();
+        onlinePlayers.add(player.getName());
 
-        Component welcomeMessage = Component.text()
-                .append(Component.text("Welcome, ", NamedTextColor.GOLD))
-                .append(player.name().color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD))
-                .append(Component.text("! There are now ", NamedTextColor.GOLD))
-                .append(Component.text(onlinePlayers, NamedTextColor.AQUA).decorate(TextDecoration.BOLD))
-                .append(Component.text(" players online.", NamedTextColor.GOLD))
-                .build();
-
-        player.sendMessage(welcomeMessage);
-
-        Component broadcastMessage = Component.text()
-                .append(player.name().color(NamedTextColor.GREEN))
-                .append(Component.text(" has joined the server!", NamedTextColor.GRAY))
-                .build();
-
-        event.joinMessage(null); 
-
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (!onlinePlayer.equals(player)) {
-                onlinePlayer.sendMessage(broadcastMessage);
-            }
-        }
+        getLogger().info("Player joined: " + player.getName());
+        getLogger().info("Online players (" + onlinePlayers.size() + "): " + String.join(", ", onlinePlayers));
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        onlinePlayers.remove(player.getName());
 
-        int onlinePlayersAfterQuit = Bukkit.getOnlinePlayers().size() - 1; 
-
-        if (onlinePlayersAfterQuit < 0) {
-            onlinePlayersAfterQuit = 0;
-        }
-
-        Component farewellMessage = Component.text()
-                .append(Component.text("Goodbye, ", NamedTextColor.RED))
-                .append(player.name().color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD))
-                .append(Component.text("! There are now ", NamedTextColor.RED))
-                .append(Component.text(onlinePlayersAfterQuit, NamedTextColor.AQUA).decorate(TextDecoration.BOLD))
-                .append(Component.text(" players online.", NamedTextColor.RED))
-                .build();
-
-        event.quitMessage(null); 
-
-        Bukkit.broadcast(farewellMessage);
+        getLogger().info("Player left: " + player.getName());
+        getLogger().info("Online players (" + onlinePlayers.size() + "): " + String.join(", ", onlinePlayers));
     }
 }
