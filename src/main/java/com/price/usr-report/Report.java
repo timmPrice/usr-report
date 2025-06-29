@@ -22,12 +22,12 @@ public class Report extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
-        getLogger().info("UserReportPlugin has been enabled!");
+        getLogger().info("USR-REPORT : enabled");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("UserReportPlugin has been disabled!");
+        getLogger().info("USR-REPORT : disabled");
     }
 
     @EventHandler
